@@ -94,8 +94,10 @@ public class Job: Performable {
     /// Starts a pending job.
     public func start() {
         guard !isRunning else {
+            print("Job - start - already running return")
             return
         }
+        print("Job - start")
 
         isRunning = true
         perform()
@@ -103,37 +105,44 @@ public class Job: Performable {
 
     /// Stops a job.
     public func stop() {
+        print("Job - stop - before lock")
         lock.lock()
         defer {
             lock.unlock()
         }
-        
+        print("Job - stop")
         isRunning = false
     }
 
     func perform() {
+        print("Job - stop - before lock")
         lock.lock()
         defer {
             lock.unlock()
         }
         
         guard isRunning else {
+            print("Job - is already running - return")
             return
         }
-        
+        print("Job - perform")
+
         do {
             try action()
             Jobs.shared.queue(self)
+            print("Jobs - added job to queue ")
         } catch {
             guard
                 let recoveryStrategy = errorCallback?(error),
                 recoveryStrategy != .default
                 else {
                     //default recovery strategy
+                    print("Jobs - default recovery strategy")
                     Jobs.shared.queue(self, in: 5.seconds)
                     return
             }
-            
+            print("Jobs - switch recoveryStrategy")
+
             switch recoveryStrategy {
             case .retry(let deadline):
                 Jobs.shared.queue(self, in: deadline)
@@ -183,7 +192,7 @@ public final class Jobs {
             job.isRunning = true
             shared.queue(job, performNow: true)
         }
-
+        print("Jobs.add - return job")
         return job
     }
 
