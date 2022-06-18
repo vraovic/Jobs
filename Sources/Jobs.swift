@@ -115,7 +115,7 @@ public class Job: Performable {
     }
 
     func perform() {
-        print("Job - stop - before lock")
+        print("Job - perform - before lock")
         lock.lock()
         defer {
             lock.unlock()
