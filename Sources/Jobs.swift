@@ -122,7 +122,7 @@ public class Job: Performable {
         }
         
         guard isRunning else {
-            print("Job - is already running - return")
+            print("Job - perform - is already running - return")
             return
         }
         print("Job - perform")
@@ -189,6 +189,7 @@ public final class Jobs {
         )
 
         if autoStart {
+            print("Jobs.add - autoStart = true")
             job.isRunning = true
             shared.queue(job, performNow: true)
         }
