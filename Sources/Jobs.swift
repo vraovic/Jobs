@@ -122,10 +122,10 @@ public class Job: Performable {
         }
         
         guard isRunning else {
-            print("Job - perform - is already running - return")
+            print("Job - perform - is already running[\(self.name ?? "")] - return")
             return
         }
-        print("Job - perform")
+        print("Job - perform [\(self.name ?? "")]")
 
         do {
             try action()
